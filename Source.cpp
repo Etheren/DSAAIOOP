@@ -1,3 +1,5 @@
+#include <iostream>
+
 class Node
 {
 public:
@@ -9,7 +11,7 @@ public:
 
 	Node* getPrev(void);
 
-	void setVal(int value);
+	void setVal(int valueInput);
 
 	void setPrev(Node* prevptr);
 
@@ -17,7 +19,7 @@ public:
 
 	int getPriority(void);
 
-	void setPriority(int priority);
+	void setPriority(int priorityInput);
 
 private:
 	Node* next;
@@ -65,7 +67,6 @@ private:
 	virtual Node* NodeDequeue(void);
 };
 
-
 class Scheduler : public Queue
 {
 private:
@@ -73,3 +74,23 @@ private:
 	Node* NodeDequeue(void);
 
 };
+
+int Node::getVal(void)
+{
+	return value;
+}
+
+void Node::setVal(int valueInput)
+{
+	value = valueInput;
+}
+
+int Node::getPriority(void)
+{
+	return priority;
+}
+
+void Node::setPriority(int priorityInput)
+{
+	priority = priorityInput;
+}
