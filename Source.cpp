@@ -90,8 +90,11 @@ public:
 			top = top->getNext();			//Make the top value equal to the node that is the next node on the stack
 			delete temp;					//then deallocate the memory that is assigned to the node temp
 		}
-		else throw "Stack is Empty";	//If the stack is empty, returnValue stays at 0, and a message is output to the screen explaining the stack is empty
-		return returnValue;				//Then return the value that is stored under returnValue.
+		else 
+		{
+			std::cout << "Stack is Empty" << std::endl;		//If the stack is empty, returnValue stays at 0, and a message is output to the screen explaining the stack is empty
+		}
+		return returnValue;				//Then return the value that is stored under returnValue.		
 	}
 
 private:
@@ -140,13 +143,7 @@ protected:
 
 private:
 
-	virtual Node* NodeDequeue(void);
-};
-
-class Scheduler : public Queue		//Class declaration used to handle the Scheduler, which also uses the Queue class
-{
-private:
-	Node* NodeDequeue(void) {								//Function used to remove the node from the front of the queue.
+	virtual Node* NodeDequeue(void) {
 		Node* temp = front;									//Create a temporary Node value, and make it equal to the value of the front value
 		if (front != nullptr)								//If the front of the queue is NOT null, (has at least 1 value), 
 		{
@@ -156,3 +153,49 @@ private:
 		return temp;		//Then return the value that is stored under temp
 	};
 };
+
+class Scheduler : public Queue		//Class declaration used to handle the Scheduler, which also uses the Queue class
+{
+private:
+	
+	Node* NodeDequeue(void) {								//Function used to remove the node from the front of the queue.
+		Node* temp = front;									//Create a temporary Node value, and make it equal to the value of the front value
+		if (front != nullptr)								//If the front of the queue is NOT null, (has at least 1 value), 
+		{
+			front = front->getPrev();						//Make the front value equal to the result of front's getPrev function
+			if (front != nullptr) front->setNext(nullptr);	//If the front of the queue is still NOT null (has at least 1 value), set the front value to be equal to nullptr(Null Pointer)
+		}
+		return temp;		//Then return the value that is stored under temp
+	};
+
+	Node* PriorityScheduler(int noOfProcs) {
+		Node* currentVal[1000]; 
+		Queue toProcess;
+		for (int count = 0; count < noOfProcs; count++)
+		{
+
+		}
+	}
+
+};
+
+int main()
+{
+	Stack s;
+	Queue q;
+	s.Push(10);
+	s.Push(20);
+	s.Push(30);
+	std::cout << s.Pop() << std::endl;
+	std::cout << s.Pop() << std::endl;
+	std::cout << s.Pop() << std::endl;
+	std::cout << s.Pop() << std::endl;
+	q.Enqueue(10, 1);
+	q.Enqueue(20, 1);
+	q.Enqueue(30, 1);
+	std::cout << q.Dequeue() << std::endl;
+	std::cout << q.Dequeue() << std::endl;
+	std::cout << q.Dequeue() << std::endl;
+	system("pause");
+	return 0;
+}
