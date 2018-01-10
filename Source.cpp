@@ -92,7 +92,7 @@ public:
 		}
 		else 
 		{
-			std::cout << "Stack is Empty" << std::endl;		//If the stack is empty, returnValue stays at 0, and a message is output to the screen explaining the stack is empty
+			std::cout << "Stack is Empty, Outputting 0" << std::endl;		//If the stack is empty, returnValue stays at 0, and a message is output to the screen explaining the stack is empty
 		}
 		return returnValue;				//Then return the value that is stored under returnValue.		
 	}
@@ -126,13 +126,14 @@ public:
 			tempValue = back->getNext();		//Make temp value equal to the result of the back's getNext function return
 			tempValue->setPrev(back);			//Then move the value that is stored under back, and push that the the back of the queue
 		}
-		
+		queueSize += 1;
 	};
 
 	int Dequeue(void) {							//Function that removes the front value from the queue
 		Node* tempValue = NodeDequeue();		//Create a temporary Node value, and make it equal to the result of the function called NodeDequeue
 		int returnValue = tempValue->getVal();	//Create an interger value called returnValue, and make it equal to the result of tempValue's getVal function
 		if (front == nullptr) back = front;		//If the front of the queue produces a null pointer (is empty), make the back of the queue equal to the front of the queue
+		queueSize -= 1;
 		return returnValue;						//Then finally return the interger that is under returnValue
 	}
 
@@ -140,8 +141,12 @@ protected:
 
 	Node* back;						//Node declaration called back, which is used to determine the back of the queue
 	Node* front;					//Node declaration called front, which is used to determine the front of the queue
+	int queueSize = 0;				//Interger declaration called queueSize, which is used to keep track of how many elements there are in a queue
+	int queueLocation = 1;			//Interger declaration called queueLocation, which is used to keep track of which element is currently being examined in a queue
 
 private:
+
+	
 
 	virtual Node* NodeDequeue(void) {
 		Node* temp = front;									//Create a temporary Node value, and make it equal to the value of the front value
@@ -154,10 +159,15 @@ private:
 	};
 };
 
-class Scheduler : public Queue		//Class declaration used to handle the Scheduler, which also uses the Queue class
+class Scheduler : public Queue 	//Class declaration used to handle the Scheduler, which also uses the Queue class
 {
 private:
 	
+	Node* currentVal;
+	int currentID = 0;
+	int currentPrio = 0;
+	int prioCheck = 10;
+
 	Node* NodeDequeue(void) {								//Function used to remove the node from the front of the queue.
 		Node* temp = front;									//Create a temporary Node value, and make it equal to the value of the front value
 		if (front != nullptr)								//If the front of the queue is NOT null, (has at least 1 value), 
@@ -165,24 +175,42 @@ private:
 			front = front->getPrev();						//Make the front value equal to the result of front's getPrev function
 			if (front != nullptr) front->setNext(nullptr);	//If the front of the queue is still NOT null (has at least 1 value), set the front value to be equal to nullptr(Null Pointer)
 		}
-		return temp;		//Then return the value that is stored under temp
+		return temp;										//Then return the Node value that is stored under temp
 	};
 
-	Node* PriorityScheduler(int noOfProcs) {
-		Node* currentVal[1000]; 
-		Queue toProcess;
-		for (int count = 0; count < noOfProcs; count++)
+	Scheduler PriorityScheduler(Scheduler toProcess ) {
+		Scheduler priotisedQueue;
+		while (queueSize > 0)
 		{
-
+			currentVal = toProcess.NodeDequeue();
+			currentID = currentVal->getVal();
+			currentPrio = currentVal->getPriority();
+			queueSize -= 1;
+			if (currentPrio == prioCheck)
+			{
+				priotisedQueue.Enqueue(currentID, currentPrio);
+				currentID = 0;
+				currentPrio = 0;
+			}
+			else {
+				toProcess.Enqueue(currentID, currentPrio);
+				currentID = 0;
+				currentPrio = 0;
+				queueSize += 1;
+			}
+			queueLocation += 1;
+			if (queueLocation > queueSize)
+			{
+				prioCheck -= 1;
+			}
 		}
 	}
-
 };
 
 int main()
 {
 	Stack s;
-	Queue q;
+	Scheduler q;
 	s.Push(10);
 	s.Push(20);
 	s.Push(30);
@@ -191,8 +219,8 @@ int main()
 	std::cout << s.Pop() << std::endl;
 	std::cout << s.Pop() << std::endl;
 	q.Enqueue(10, 1);
-	q.Enqueue(20, 1);
-	q.Enqueue(30, 1);
+	q.Enqueue(20, 2);
+	q.Enqueue(30, 3);
 	std::cout << q.Dequeue() << std::endl;
 	std::cout << q.Dequeue() << std::endl;
 	std::cout << q.Dequeue() << std::endl;
